@@ -150,7 +150,7 @@ function App() {
                 </a>
                 <a
                   href="mailto:info@okievapes.com"
-                  className="inline-flex items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black hover:text-white"
+                  className="hero-email-button inline-flex items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black"
                 >
                   info@okievapes.com
                 </a>

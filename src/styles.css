@@ -39,6 +39,15 @@ a {
   min-height: 100vh;
 }
 
+.hero-email-button {
+  color: #000000;
+}
+
+.hero-email-button:hover,
+.hero-email-button:focus-visible {
+  color: #ffffff;
+}
+
 .surface-panel {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
