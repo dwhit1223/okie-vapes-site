@@ -1,11 +1,17 @@
-# Okie Vapes Sample Store Site
+# Okie Vapes
 
-This is a Vite + React sample homepage for a local retail vape store.
+This is the landing page for Okie Vapes, built with React and Vite.
 
 ## Run locally
 
 ```bash
 npm install
+Copy-Item .env.example .env
+```
+
+Set `VITE_FORMSPREE_ENDPOINT` in `.env`, then start the app:
+
+```bash
 npm run dev
 ```
 
@@ -19,5 +25,4 @@ npm run build
 
 - This is an informational website only.
 - No ecommerce functionality is included.
-- Address, phone, and product brands are currently sample placeholders.
-- The layout is designed to be easy to expand later into separate pages.
+- Newsletter signup posts to Formspree using `VITE_FORMSPREE_ENDPOINT`.

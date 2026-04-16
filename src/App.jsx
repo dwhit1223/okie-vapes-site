@@ -1,16 +1,88 @@
+import { useState } from 'react';
 import logoMark from './assets/profile_logo.png';
 import logoFull from './assets/profile_logo_name.png';
 
 const contactItems = [
   { label: 'Address', value: 'Coming Soon' },
   { label: 'Phone', value: 'Coming Soon' },
-  { label: 'Email', value: 'Coming Soon' },
+  { label: 'Email', value: 'info@okievapes.com', href: 'mailto:info@okievapes.com' },
   { label: 'Hours', value: 'Coming Soon' },
 ];
 
 const categories = ['Disposable Vapes', 'E-Liquids', 'Devices', 'Coils & Pods', 'Accessories'];
+const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT?.trim() ?? '';
 
 function App() {
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
+  const [status, setStatus] = useState({ type: 'idle', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSignupSubmit(event) {
+    event.preventDefault();
+
+    if (!formspreeEndpoint) {
+      setStatus({
+        type: 'error',
+        message: 'Newsletter signup is almost ready. Add your Formspree form URL to finish setup.',
+      });
+      return;
+    }
+
+    if (company) {
+      setEmail('');
+      setCompany('');
+      setStatus({
+        type: 'success',
+        message: 'Thanks for signing up. We will send updates, promotions, and opening news here.',
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus({ type: 'idle', message: '' });
+
+    try {
+      const response = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          source: 'okievapes.com landing page',
+          interest: 'Opening updates, discounts, and email notifications',
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const errorMessage =
+          result?.errors?.[0]?.message || 'Something went wrong while submitting your email.';
+        throw new Error(errorMessage);
+      }
+
+      setEmail('');
+      setCompany('');
+      setStatus({
+        type: 'success',
+        message: 'Thanks for signing up. We will send updates, promotions, and opening news here.',
+      });
+    } catch (error) {
+      setStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong while submitting your email.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white text-black">
       <div className="border-b border-black bg-black px-4 py-3 text-center text-[11px] font-bold uppercase tracking-[0.28em] text-white sm:text-xs">
@@ -57,7 +129,7 @@ function App() {
                 Coming Soon
               </p>
               <h1 className="mt-4 max-w-3xl text-5xl font-black uppercase leading-[0.9] tracking-[-0.06em] text-black sm:text-6xl lg:text-7xl">
-                Muskogee’s Next
+                Muskogee&apos;s Next
                 <span className="block">Vape Shop.</span>
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-700 sm:text-lg">
@@ -76,9 +148,12 @@ function App() {
                 >
                   Follow For Updates
                 </a>
-                <div className="inline-flex items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black">
-                  Contact Details Coming Soon
-                </div>
+                <a
+                  href="mailto:info@okievapes.com"
+                  className="inline-flex items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black hover:text-white"
+                >
+                  info@okievapes.com
+                </a>
               </div>
             </div>
 
@@ -98,11 +173,102 @@ function App() {
                       <p className="text-xs font-bold uppercase tracking-[0.28em] text-zinc-500">
                         {item.label}
                       </p>
-                      <p className="mt-2 text-lg font-semibold text-black">{item.value}</p>
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          className="mt-2 inline-flex text-lg font-semibold text-black underline decoration-black/30 underline-offset-4 transition hover:text-[#ea580c]"
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p className="mt-2 text-lg font-semibold text-black">{item.value}</p>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-black bg-[#fff7ed]">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-16">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#ea580c]">
+                Email Updates
+              </p>
+              <h2 className="mt-4 max-w-xl text-3xl font-black uppercase tracking-[-0.05em] text-black sm:text-4xl">
+                Be first to hear about opening news and local deals.
+              </h2>
+              <p className="mt-5 max-w-xl text-base leading-8 text-zinc-700">
+                Join the Okie Vapes email list for store announcements, discount alerts, and launch
+                updates. This signup is for adult customers interested in in-store offers only.
+              </p>
+            </div>
+
+            <div className="border border-black bg-white p-6 sm:p-8">
+              <form className="space-y-4" onSubmit={handleSignupSubmit}>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-600"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className="mt-3 w-full border border-black bg-white px-4 py-3 text-base text-black outline-none transition placeholder:text-zinc-400 focus:border-[#ea580c]"
+                  />
+                </div>
+
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="company">Company</label>
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    tabIndex="-1"
+                    autoComplete="off"
+                    value={company}
+                    onChange={(event) => setCompany(event.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex w-full items-center justify-center border border-black bg-[#f97316] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+                  style={{ color: '#ffffff' }}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Join The Email List'}
+                </button>
+
+                <p className="text-sm leading-6 text-zinc-600">
+                  By signing up, you are opting in to receive store updates and promotional emails
+                  from Okie Vapes.
+                </p>
+                <p className="text-sm leading-6 text-zinc-600">
+                  We only use your email for Okie Vapes announcements, discounts, and launch news.
+                  You can unsubscribe at any time through the link in any email.
+                </p>
+
+                {status.message ? (
+                  <p
+                    className={`text-sm font-medium ${
+                      status.type === 'success' ? 'text-green-700' : 'text-red-700'
+                    }`}
+                  >
+                    {status.message}
+                  </p>
+                ) : null}
+              </form>
             </div>
           </div>
         </section>
@@ -141,7 +307,15 @@ function App() {
 
             <div className="space-y-1 text-sm text-zinc-300 lg:text-right">
               <p>Muskogee, Oklahoma</p>
-              <p>Address, phone, and email coming soon</p>
+              <p>
+                Email:{' '}
+                <a
+                  href="mailto:info@okievapes.com"
+                  className="font-semibold text-white underline-offset-4 transition hover:text-[#f97316] hover:underline"
+                >
+                  info@okievapes.com
+                </a>
+              </p>
               <p>
                 Follow us on{' '}
                 <a
