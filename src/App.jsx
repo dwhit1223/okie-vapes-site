@@ -3,8 +3,12 @@ import logoMark from './assets/profile_logo.png';
 import logoFull from './assets/profile_logo_name.png';
 
 const contactItems = [
-  { label: 'Address', value: 'Coming Soon' },
-  { label: 'Phone', value: 'Coming Soon' },
+  {
+    label: 'Address',
+    value: '2340 E Shawnee Byp, Muskogee, OK 74403',
+    href: 'https://www.google.com/maps/search/?api=1&query=2340%20E%20Shawnee%20Byp%2C%20Muskogee%2C%20OK%2074403',
+  },
+  { label: 'Phone', value: '(918) 608-8273', href: 'tel:+19186088273' },
   { label: 'Email', value: 'info@okievapes.com', href: 'mailto:info@okievapes.com' },
   { label: 'Hours', value: 'Coming Soon' },
 ];
