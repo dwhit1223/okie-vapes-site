@@ -15,12 +15,38 @@ const contactItems = [
 
 const categories = ['Disposable Vapes', 'E-Liquids', 'Devices', 'Coils & Pods', 'Accessories'];
 const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT?.trim() ?? '';
+const ageGateStorageKey = 'okie-vapes-age-confirmed';
 
 function App() {
+  const [isAgeConfirmed, setIsAgeConfirmed] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    try {
+      return window.localStorage.getItem(ageGateStorageKey) === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
   const [status, setStatus] = useState({ type: 'idle', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function handleAgeConfirm() {
+    try {
+      window.localStorage.setItem(ageGateStorageKey, 'true');
+    } catch {
+      // Visitors can still enter if browser storage is disabled.
+    }
+
+    setIsAgeConfirmed(true);
+  }
+
+  function handleAgeDeny() {
+    window.location.href = 'https://www.google.com/';
+  }
 
   async function handleSignupSubmit(event) {
     event.preventDefault();
@@ -89,6 +115,54 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white text-black">
+      {!isAgeConfirmed ? (
+        <div
+          className="fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-black px-5 py-8 text-black"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="age-gate-title"
+        >
+          <div className="w-full max-w-lg border border-white bg-white p-6 shadow-2xl sm:p-8">
+            <div className="mx-auto h-24 w-24 overflow-hidden rounded-full border border-black bg-white p-2">
+              <img src={logoMark} alt="Okie Vapes logo mark" className="h-full w-full object-contain" />
+            </div>
+            <p className="mt-6 text-center text-xs font-bold uppercase tracking-[0.3em] text-[#ea580c]">
+              Age Verification Required
+            </p>
+            <h1
+              id="age-gate-title"
+              className="mt-3 text-center text-3xl font-black uppercase leading-none tracking-[-0.05em] text-black sm:text-4xl"
+            >
+              Are you 21 or older?
+            </h1>
+            <p className="mt-5 text-center text-base leading-7 text-zinc-700">
+              Okie Vapes is intended only for adults 21 years of age or older. Please confirm your
+              age before entering this site.
+            </p>
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={handleAgeConfirm}
+                className="inline-flex items-center justify-center border border-black bg-[#f97316] px-5 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black"
+                style={{ color: '#ffffff' }}
+              >
+                Yes, I Am 21+
+              </button>
+              <button
+                type="button"
+                onClick={handleAgeDeny}
+                className="inline-flex items-center justify-center border border-black bg-white px-5 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black hover:text-white"
+              >
+                No, Exit
+              </button>
+            </div>
+            <p className="mt-5 text-center text-xs leading-5 text-zinc-500">
+              This website does not offer online sales. All purchases are in-store only.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
       <div className="border-b border-black bg-black px-4 py-3 text-center text-[11px] font-bold uppercase tracking-[0.28em] text-white sm:text-xs">
         21+ only | For in-store purchases only | Website does not offer online sales
       </div>
