@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Okie Vapes favicon">
+  <rect width="64" height="64" rx="12" fill="#1b1816" />
+  <text
+    x="32"
+    y="34"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#f5f1ea"
+    font-family="'Barlow Condensed', Impact, Arial Narrow, sans-serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="2"
+  >
+    OV
+  </text>
+  <rect x="11" y="47" width="42" height="4" rx="2" fill="#b62d24" />
+</svg>
