@@ -49,27 +49,27 @@ a {
 }
 
 .surface-panel {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.024)),
     rgba(10, 10, 10, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .surface-panel,
 section,
 footer {
-  animation: rise-in 700ms ease-out both;
+  animation: rise-in 0.7s ease-out both;
 }
 
 @keyframes rise-in {
-  from {
+  0% {
     opacity: 0;
     transform: translateY(18px);
   }
 
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
   }

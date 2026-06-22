@@ -1,20 +1,39 @@
 import { useState } from 'react';
-import logoMark from './assets/profile_logo.png';
-import logoFull from './assets/profile_logo_name.png';
+import profileLogo from './assets/profile_logo.png';
+import profileLogoName from './assets/profile_logo_name.png';
 
-const contactItems = [
+const businessHours = 'Mon-Sat 10am-6pm';
+
+const storeDetails = [
   {
     label: 'Address',
     value: '2340 E Shawnee Byp, Muskogee, OK 74403',
     href: 'https://www.google.com/maps/search/?api=1&query=2340%20E%20Shawnee%20Byp%2C%20Muskogee%2C%20OK%2074403',
   },
-  { label: 'Phone', value: '(918) 608-8273', href: 'tel:+19186088273' },
-  { label: 'Email', value: 'info@okievapes.com', href: 'mailto:info@okievapes.com' },
-  { label: 'Hours', value: 'Coming Soon' },
+  {
+    label: 'Phone',
+    value: '(918) 608-8273',
+    href: 'tel:+19186088273',
+  },
+  {
+    label: 'Email',
+    value: 'info@okievapes.com',
+    href: 'mailto:info@okievapes.com',
+  },
+  {
+    label: 'Hours',
+    value: businessHours,
+  },
 ];
 
-const categories = ['Disposable Vapes', 'E-Liquids', 'Devices', 'Coils & Pods', 'Accessories'];
-const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT?.trim() ?? '';
+const categories = [
+  'Disposable Vapes',
+  'E-Liquids',
+  'Devices',
+  'Coils & Pods',
+  'Accessories',
+];
+
 const ageGateStorageKey = 'okie-vapes-age-confirmed';
 
 function App() {
@@ -29,10 +48,6 @@ function App() {
       return false;
     }
   });
-  const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
-  const [status, setStatus] = useState({ type: 'idle', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleAgeConfirm() {
     try {
@@ -48,71 +63,6 @@ function App() {
     window.location.href = 'https://www.google.com/';
   }
 
-  async function handleSignupSubmit(event) {
-    event.preventDefault();
-
-    if (!formspreeEndpoint) {
-      setStatus({
-        type: 'error',
-        message: 'Newsletter signup is almost ready. Add your Formspree form URL to finish setup.',
-      });
-      return;
-    }
-
-    if (company) {
-      setEmail('');
-      setCompany('');
-      setStatus({
-        type: 'success',
-        message: 'Thanks for signing up. We will send updates, promotions, and opening news here.',
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    setStatus({ type: 'idle', message: '' });
-
-    try {
-      const response = await fetch(formspreeEndpoint, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          source: 'okievapes.com landing page',
-          interest: 'Opening updates, discounts, and email notifications',
-        }),
-      });
-
-      const result = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        const errorMessage =
-          result?.errors?.[0]?.message || 'Something went wrong while submitting your email.';
-        throw new Error(errorMessage);
-      }
-
-      setEmail('');
-      setCompany('');
-      setStatus({
-        type: 'success',
-        message: 'Thanks for signing up. We will send updates, promotions, and opening news here.',
-      });
-    } catch (error) {
-      setStatus({
-        type: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong while submitting your email.',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
   return (
     <div className="min-h-screen bg-white text-black">
       {!isAgeConfirmed ? (
@@ -124,7 +74,7 @@ function App() {
         >
           <div className="w-full max-w-lg border border-white bg-white p-6 shadow-2xl sm:p-8">
             <div className="mx-auto h-24 w-24 overflow-hidden rounded-full border border-black bg-white p-2">
-              <img src={logoMark} alt="Okie Vapes logo mark" className="h-full w-full object-contain" />
+              <img src={profileLogo} alt="Okie Vapes logo mark" className="h-full w-full object-contain" />
             </div>
             <p className="mt-6 text-center text-xs font-bold uppercase tracking-[0.3em] text-[#ea580c]">
               Age Verification Required
@@ -168,14 +118,14 @@ function App() {
       </div>
 
       <div className="border-b border-black bg-[#f97316] px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-white sm:text-xs">
-        Retail location opening soon in Muskogee, Oklahoma
+        Now open in Muskogee | Regular hours: {businessHours}
       </div>
 
       <header className="border-b border-black bg-white">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-4">
             <div className="hidden h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-black bg-white p-1 sm:flex">
-              <img src={logoMark} alt="Okie Vapes logo mark" className="h-full w-full object-contain" />
+              <img src={profileLogo} alt="Okie Vapes logo mark" className="h-full w-full object-contain" />
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.34em] text-zinc-500">
@@ -204,18 +154,17 @@ function App() {
           <div className="mx-auto grid w-full max-w-6xl gap-0 px-5 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:px-8">
             <div className="border-b border-black py-12 lg:border-b-0 lg:border-r lg:py-20">
               <p className="text-sm font-semibold uppercase tracking-[0.32em] text-[#ea580c]">
-                Coming Soon
+                Now Open
               </p>
               <h1 className="mt-4 max-w-3xl text-5xl font-black uppercase leading-[0.9] tracking-[-0.06em] text-black sm:text-6xl lg:text-7xl">
-                Muskogee&apos;s Next
+                Your Muskogee
                 <span className="block">Vape Shop.</span>
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-700 sm:text-lg">
-                Okie Vapes is preparing to open in Muskogee with a clean retail space, a strong
+                Okie Vapes is now fully open in Muskogee with a clean retail space, a strong
                 everyday in-store selection, and a straightforward local-store experience for adult
                 customers.
               </p>
-
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="https://www.facebook.com/okievapes"
@@ -224,13 +173,15 @@ function App() {
                   className="inline-flex items-center justify-center border border-black bg-[#f97316] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black hover:text-white"
                   style={{ color: '#ffffff' }}
                 >
-                  Follow For Updates
+                  Follow On Facebook
                 </a>
                 <a
-                  href="mailto:info@okievapes.com"
+                  href="https://www.google.com/maps/search/?api=1&query=2340%20E%20Shawnee%20Byp%2C%20Muskogee%2C%20OK%2074403"
+                  target="_blank"
+                  rel="noreferrer"
                   className="hero-email-button inline-flex items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black"
                 >
-                  info@okievapes.com
+                  Get Directions
                 </a>
               </div>
             </div>
@@ -238,28 +189,30 @@ function App() {
             <div className="bg-white py-12 lg:py-20">
               <div className="mx-auto max-w-md lg:pl-10">
                 <div className="overflow-hidden border border-black bg-white p-4">
-                  <img src={logoFull} alt="Okie Vapes logo" className="w-full object-contain" />
+                  <img src={profileLogoName} alt="Okie Vapes logo" className="w-full object-contain" />
                 </div>
 
                 <p className="mt-8 text-xs font-semibold uppercase tracking-[0.32em] text-zinc-500">
                   Store Details
                 </p>
-
                 <div className="mt-6 space-y-5 border-t border-black pt-6">
-                  {contactItems.map((item) => (
-                    <div key={item.label} className="border-b border-zinc-300 pb-5 last:border-b-0 last:pb-0">
+                  {storeDetails.map((detail) => (
+                    <div
+                      key={detail.label}
+                      className="border-b border-zinc-300 pb-5 last:border-b-0 last:pb-0"
+                    >
                       <p className="text-xs font-bold uppercase tracking-[0.28em] text-zinc-500">
-                        {item.label}
+                        {detail.label}
                       </p>
-                      {item.href ? (
+                      {detail.href ? (
                         <a
-                          href={item.href}
+                          href={detail.href}
                           className="mt-2 inline-flex text-lg font-semibold text-black underline decoration-black/30 underline-offset-4 transition hover:text-[#ea580c]"
                         >
-                          {item.value}
+                          {detail.value}
                         </a>
                       ) : (
-                        <p className="mt-2 text-lg font-semibold text-black">{item.value}</p>
+                        <p className="mt-2 text-lg font-semibold text-black">{detail.value}</p>
                       )}
                     </div>
                   ))}
@@ -273,80 +226,96 @@ function App() {
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-16">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#ea580c]">
-                Email Updates
+                Stay Updated
               </p>
               <h2 className="mt-4 max-w-xl text-3xl font-black uppercase tracking-[-0.05em] text-black sm:text-4xl">
-                Be first to hear about opening news and local deals.
+                Follow us on Facebook for announcements, updates, and local specials.
               </h2>
               <p className="mt-5 max-w-xl text-base leading-8 text-zinc-700">
-                Join the Okie Vapes email list for store announcements, discount alerts, and launch
-                updates. This signup is for adult customers interested in in-store offers only.
+                We&apos;re removing the email signup for now. For store announcements, new arrivals,
+                and local promotions, Facebook is the best place to keep up with Okie Vapes.
               </p>
             </div>
 
             <div className="border border-black bg-white p-6 sm:p-8">
-              <form className="space-y-4" onSubmit={handleSignupSubmit}>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-600"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="you@example.com"
-                    className="mt-3 w-full border border-black bg-white px-4 py-3 text-base text-black outline-none transition placeholder:text-zinc-400 focus:border-[#ea580c]"
-                  />
-                </div>
-
-                <div className="hidden" aria-hidden="true">
-                  <label htmlFor="company">Company</label>
-                  <input
-                    id="company"
-                    name="company"
-                    type="text"
-                    tabIndex="-1"
-                    autoComplete="off"
-                    value={company}
-                    onChange={(event) => setCompany(event.target.value)}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex w-full items-center justify-center border border-black bg-[#f97316] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-600">
+                Best Place For Updates
+              </p>
+              <p className="mt-4 text-base leading-8 text-zinc-700">
+                Follow our Facebook page for announcements, new product highlights, and current
+                in-store updates.
+              </p>
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="https://www.facebook.com/okievapes"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center border border-black bg-[#f97316] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black"
                   style={{ color: '#ffffff' }}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Join The Email List'}
-                </button>
+                  Follow Okie Vapes On Facebook
+                </a>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=2340%20E%20Shawnee%20Byp%2C%20Muskogee%2C%20OK%2074403"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center border border-black bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-black transition hover:bg-black"
+                  style={{ color: '#000000' }}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.color = '#ffffff';
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.color = '#000000';
+                  }}
+                >
+                  Get Directions
+                </a>
+              </div>
+              <p className="mt-5 text-sm leading-6 text-zinc-600">
+                For now, Facebook is our main channel for announcements and day-to-day updates.
+              </p>
+            </div>
+          </div>
+        </section>
 
-                <p className="text-sm leading-6 text-zinc-600">
-                  By signing up, you are opting in to receive store updates and promotional emails
-                  from Okie Vapes.
-                </p>
-                <p className="text-sm leading-6 text-zinc-600">
-                  We only use your email for Okie Vapes announcements, discounts, and launch news.
-                  You can unsubscribe at any time through the link in any email.
-                </p>
+        <section className="border-b border-black bg-[#f3f3f3]">
+          <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8 lg:py-16">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#ea580c]">
+                Find Us
+              </p>
+              <h2 className="mt-4 max-w-xl text-3xl font-black uppercase tracking-[-0.05em] text-black sm:text-4xl">
+                Visit Okie Vapes in Muskogee.
+              </h2>
+              <p className="mt-5 max-w-xl text-base leading-8 text-zinc-700">
+                We&apos;re open and ready to help. Stop by during normal business hours, or tap for
+                turn-by-turn directions from your current location.
+              </p>
+              <div className="mt-6 space-y-3 text-base leading-7 text-zinc-700">
+                <p>2340 E Shawnee Byp</p>
+                <p>Muskogee, OK 74403</p>
+                <p>{businessHours}</p>
+                <p>21+ only. Valid ID required.</p>
+              </div>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=2340%20E%20Shawnee%20Byp%2C%20Muskogee%2C%20OK%2074403"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-7 inline-flex items-center justify-center border border-black bg-[#f97316] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-black"
+                style={{ color: '#ffffff' }}
+              >
+                Open In Google Maps
+              </a>
+            </div>
 
-                {status.message ? (
-                  <p
-                    className={`text-sm font-medium ${
-                      status.type === 'success' ? 'text-green-700' : 'text-red-700'
-                    }`}
-                  >
-                    {status.message}
-                  </p>
-                ) : null}
-              </form>
+            <div className="overflow-hidden border border-black bg-white">
+              <iframe
+                title="Map to Okie Vapes"
+                src="https://www.google.com/maps?q=2340+E+Shawnee+Byp,+Muskogee,+OK+74403&output=embed"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="block min-h-[360px] w-full border-0"
+              />
             </div>
           </div>
         </section>
@@ -357,12 +326,12 @@ function App() {
               In-Store Categories
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {categories.map((item) => (
+              {categories.map((category) => (
                 <div
-                  key={item}
+                  key={category}
                   className="border border-black bg-[#f3f3f3] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-black"
                 >
-                  {item}
+                  {category}
                 </div>
               ))}
             </div>
@@ -373,12 +342,16 @@ function App() {
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-10 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 overflow-hidden rounded-full border border-white/15 bg-white p-1">
-                <img src={logoMark} alt="Okie Vapes secondary logo mark" className="h-full w-full object-contain" />
+                <img
+                  src={profileLogo}
+                  alt="Okie Vapes secondary logo mark"
+                  className="h-full w-full object-contain"
+                />
               </div>
               <div>
                 <p className="text-2xl font-black uppercase tracking-[-0.04em]">Okie Vapes</p>
                 <p className="mt-1 text-sm uppercase tracking-[0.18em] text-zinc-400">
-                  Muskogee retail store opening soon
+                  Now open in Muskogee
                 </p>
               </div>
             </div>
